@@ -1,0 +1,33 @@
+version: "3.8"
+services: 
+    nginx:
+        container_name: "llnginx"
+        image: nginx
+        restart: always
+        depends_on:
+            - php
+            - db
+        ports: 
+            - 7777:80
+        links: 
+            - php
+        volumes: 
+            - ./blog:/var/www/html/
+            - ./nginx/:/etc/nginx/conf.d
+    php:
+        container_name: "llphp"
+        build:
+            context: .
+        volumes: 
+            - ./blog:/var/www/html/
+    db:
+        container_name: "lldb"
+        image: mariadb
+        volumes:
+            - ./sql:/var/lib/mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: bloglaravel
+            MYSQL_USER: bloglaravel
+            MYSQL_PASSWORD: root
